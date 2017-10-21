@@ -1,7 +1,7 @@
 {
-  "name": "atp-rest-media",
-  "version": "0.2.0",
-  "description": "Media REST endpoints",
+  "name": "atp-rest-comic",
+  "version": "0.0.0",
+  "description": "comic REST endpoints",
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run compile && mocha --compilers js:babel-core/register",
@@ -19,14 +19,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/DaemonAlchemist/atp-rest-media.git"
+    "url": "http://github.com/DaemonAlchemist/atp-rest-comic.git"
   },
   "author": "Andrew Wittrock",
   "license": "MIT",
   "dependencies": {
     "atp-config": ">=0.1.1",
-    "atp-rest": ">=0.1.0",
-    "base-64": "^0.1.0"
+    "atp-rest": ">=0.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
