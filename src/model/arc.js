@@ -60,6 +60,22 @@ export default class Arc extends Entity
             .list()
     }
 
+    getParents(id, level = 10) {
+        const sql = [...Array(n+1).keys()].map(i => "p" + i + ".id as parent" + i).join(',');
+        console.log(sql);
+        return new Promise((resolve, reject) => {
+            this.getById(id).then(thisNode => {
+                if(!thisNode.parentId) {
+                    resolve([]);
+                } else {
+                    this.getParents(thisNode.parentId).then(parents => {
+                        resolve(parents.concat(thisNode.parentId));
+                    });
+                }
+            });
+        });
+    }
+
     insertInto(parentId, id) {
         return new Promise((resolve, reject) => {
             this.where({id})
@@ -86,7 +102,7 @@ export default class Arc extends Entity
             this.getById(targetId)
                 .then(targetArc => {
                     const parentId = targetArc.parentId;
-                    const sortOrder = targetArc.sortOrder;
+                    const sortOrder = targetArc.sortOrder + 1;
                     this.query(
                         "update " + tableName +
                         " set sortOrder = sortOrder + 1" +
@@ -97,9 +113,7 @@ export default class Arc extends Entity
                         this.where({id}).limit(1).update({parentId, sortOrder})
                             .then(() => {
                                 this.getSiblings(parentId, id)
-                                    .then(siblings => {
-                                        resolve(siblings);
-                                    }).catch(reject);
+                                    .then(resolve).catch(reject);
                             }).catch(reject);
                     }).catch(reject);
                 }).catch(reject);

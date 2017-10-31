@@ -23,8 +23,6 @@ export default o(basicController.entity.crud({model, permissions, idField})).as(
     move: {
         post: (req, res) => {
             //TODO:  Test validation
-            console.log("Move endpoint");
-            console.log(req.body);
             validator()
                 .loggedIn(req)
                 .hasPermission(permissions.update, req)
@@ -41,11 +39,11 @@ export default o(basicController.entity.crud({model, permissions, idField})).as(
                 ))
                 .then(
                     () => {
-                        console.log("Validation passed");
                         const action = req.body.action;
                         const targetId = req.body.targetId;
                         const sourceId = req.body.sourceId;
                         //TODO:  Add validation so that an arc can't be moved into one of its descendants (no loops)
+                        new Arc().getParents(sourceId);
                         new Arc().removeFromParent(sourceId).then(oldSiblings => {
                             o(action).switch({
                                 into: () => new Arc().insertInto(targetId, sourceId),
@@ -56,9 +54,7 @@ export default o(basicController.entity.crud({model, permissions, idField})).as(
                                     .select(['id', 'parentId', 'sortOrder'])
                                     .getById(sourceId)
                                     .then(sourceArc => {
-                                        const results = oldSiblings.concat(newSiblings, sourceArc);
-                                        console.log(results);
-                                        respondWith.Success(req, res)(results);
+                                        respondWith.Success(req, res)(oldSiblings.concat(newSiblings, sourceArc));
                                     }).catch(respondWith.InternalServerError(req, res));
                             }).catch(respondWith.InternalServerError(req, res));
                         }).catch(respondWith.InternalServerError(req, res));
