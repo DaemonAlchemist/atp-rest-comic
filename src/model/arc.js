@@ -4,6 +4,7 @@
 
 import {Entity} from 'atp-active-record';
 import config from 'atp-config';
+import {o} from 'atp-sugar';
 
 const tableName = 'atpcomic_arcs';
 
@@ -61,18 +62,23 @@ export default class Arc extends Entity
     }
 
     getParents(id, level = 10) {
-        const sql = [...Array(n+1).keys()].map(i => "p" + i + ".id as parent" + i).join(',');
-        console.log(sql);
         return new Promise((resolve, reject) => {
-            this.getById(id).then(thisNode => {
-                if(!thisNode.parentId) {
-                    resolve([]);
-                } else {
-                    this.getParents(thisNode.parentId).then(parents => {
-                        resolve(parents.concat(thisNode.parentId));
-                    });
-                }
-            });
+            const sql = "select "
+                + [...Array(level+1).keys()].map(i => "p" + i + ".id as parent" + i).join(',')
+                + " from " + tableName + " p0 "
+                + [...Array(level).keys()].map(i =>
+                    "left join " + tableName + " p" + (i+1) + " on p" + (i+1) + ".id=p" + i + ".parentId"
+                ).join(" ")
+                + " where p0.id=" + id;
+            console.log(sql);
+            this.query(sql).then(
+                results => {
+                    const parents = o(results[0]).filter(v => v).values();
+                    console.log(parents);
+                    resolve(parents);
+                },
+                reject
+            );
         });
     }
 
