@@ -1,16 +1,14 @@
 
 import {Entity, sorting} from 'atp-active-record';
 
-const tableName = 'atpcomic_arcs';
-
-export default class Arc extends Entity
+export default class Commentary extends Entity
 {
     constructor() {
-        super('comic', tableName);
+        super('comic', 'atpcomic_commentary');
     }
 
     sorting() {
-        return sorting(this, 'parentId');
+        return sorting(this, 'pageId');
     }
 
     nextSortOrder(parentId) {

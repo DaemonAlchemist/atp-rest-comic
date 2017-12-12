@@ -1,6 +1,3 @@
-/**
- * Created by Andrea on 8/27/2017.
- */
 
 import {Entity, sorting} from 'atp-active-record';
 

@@ -27,12 +27,12 @@
   "author": "Andrew Wittrock",
   "license": "MIT",
   "dependencies": {
-    "atp-active-record": "^0.9.1",
-    "atp-config": "^0.3.2",
-    "atp-rest": "^0.17.1",
-    "atp-rest-uac": "^0.23.3",
-    "atp-sugar": "^0.8.2",
-    "atp-validator": "^0.11.1"
+    "atp-active-record": "^0.10.0",
+    "atp-config": "^0.3.3",
+    "atp-rest": "^0.18.0",
+    "atp-rest-uac": "^0.23.5",
+    "atp-sugar": "^0.8.3",
+    "atp-validator": "^0.11.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

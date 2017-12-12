@@ -5,13 +5,13 @@
 import {basicController, respondWith} from 'atp-rest';
 import {createCrudPermissions} from "atp-rest-uac";
 import Arc from "../model/arc";
-import Page from "../model/page";
 import {o} from 'atp-sugar';
 import validator from 'atp-validator';
 
 import pageController from "./page";
 
 const permissions = createCrudPermissions('comic', 'arc');
+const pagePermissions = createCrudPermissions('comic', 'page');
 const model = Arc;
 const idField = 'arcId';
 
@@ -25,7 +25,7 @@ export default o(basicController.entity.crud({model, permissions, idField})).as(
             get: (req, res) => {
                 validator()
                     .loggedIn(req)
-                    .hasPermission(permissions.update, req)
+                    .hasPermission(pagePermissions.view, req)
                     .isInteger(req.params[idField], idField)
                     .then(() => {
                         req.query[idField] = req.params[idField];

@@ -4,13 +4,13 @@
 
 import arcRoutes from './routes/arc';
 import pageRoutes from "./routes/page";
-
-//import validators from "./validators/index";
+import commentaryRoutes from "./routes/commentary";
 
 export default ({
     routes: {
         arc: arcRoutes,
         page: pageRoutes,
+        commentary: commentaryRoutes
     },
     config: {
         //validators
