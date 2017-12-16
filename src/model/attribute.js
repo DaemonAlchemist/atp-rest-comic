@@ -4,7 +4,7 @@ import {Entity, sorting} from 'atp-active-record';
 export default class Attribute extends Entity
 {
     constructor() {
-        super('comic', 'atpcomic_character_attributes');
+        super('comic', 'atpcomic_character_attribute');
     }
 
     sorting() {
