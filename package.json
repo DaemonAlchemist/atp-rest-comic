@@ -1,6 +1,6 @@
 {
   "name": "atp-rest-comic",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "comic REST endpoints",
   "main": "lib/index.js",
   "scripts": {
