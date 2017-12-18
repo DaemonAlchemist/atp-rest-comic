@@ -5,6 +5,7 @@
 import {basicController} from 'atp-rest';
 import {createCrudPermissions} from "atp-rest-uac";
 import Page from "../model/page";
+import PageCharacter, {PageCharacterBase} from '../model/page-character';
 import {o} from 'atp-sugar';
 
 import commentaryController from './commentary';
@@ -32,6 +33,11 @@ export default o(basicController.entity.crud({model, permissions, idField})).as(
                         commentaryController.get(req, res);
                     });
             }
-        }
+        },
+        character: basicController.entity.many2many(
+            'page', createCrudPermissions('comic', 'page'),
+            'character', createCrudPermissions('comic', 'character'),
+            PageCharacter, PageCharacterBase
+        )
     }
 }).raw);
