@@ -7,6 +7,7 @@ import {createCrudPermissions} from "atp-rest-uac";
 import Arc from "../model/arc";
 import {o} from 'atp-sugar';
 import validator from 'atp-validator';
+import details from "./arc/details";
 
 import pageController from "./page";
 
@@ -21,6 +22,7 @@ export default o(basicController.entity.crud({model, permissions, idField})).as(
         post: new model().sorting().move(permissions)
     },
     [":" + idField]: {
+        details,
         page: {
             get: (req, res) => {
                 validator()

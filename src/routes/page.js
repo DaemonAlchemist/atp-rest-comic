@@ -7,6 +7,7 @@ import {createCrudPermissions} from "atp-rest-uac";
 import Page from "../model/page";
 import PageCharacter, {PageCharacterBase} from '../model/page-character';
 import {o} from 'atp-sugar';
+import details from "./page/details";
 
 import commentaryController from './commentary';
 
@@ -21,6 +22,7 @@ export default o(basicController.entity.crud({model, permissions, idField})).as(
         post: new model().sorting().move(permissions)
     },
     [":" + idField]: {
+        details,
         commentary: {
             get: (req, res) => {
                 validator()
