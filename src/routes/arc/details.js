@@ -70,7 +70,14 @@ export default {
                     arc.subArcs = subArcs;
                     arc.pages = pages;
 
-                    resolve(arc);
+                    if(arc.enabled) {
+                        resolve(arc);
+                    } else {
+                        validator().hasPermission('comic.arc.view.disabled', req).then(
+                            () => {resolve(arc);},
+                            () => {reject([{code: 404, msg: "Not Found"}])}
+                        );
+                    }
                 });
             }).catch(reject);
         })

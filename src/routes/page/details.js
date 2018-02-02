@@ -10,7 +10,7 @@ import Commentary from "../../model/commentary";
 import {File} from "atp-rest-media";
 import {User} from 'atp-rest-uac';
 import validator from 'atp-validator';
-import {_, prop, equal, notEqual, sortBy, createIndex, first, last, flatten, partitionOn} from 'atp-pointfree';
+import {_, prop, equals, notEquals, sortBy, createIndex, first, last, flatten, partitionOn} from 'atp-pointfree';
 import marked from "marked";
 
 const arcPermissions = createCrudPermissions('comic', 'arc');
@@ -49,7 +49,7 @@ export default {
                                                        null;
 
                 //Get the root arc
-                const rootArc = first(arcs.filter(_(equal(null), prop('parentId'))));
+                const rootArc = first(arcs.filter(_(equals(null), prop('parentId'))));
 
                 //Partition the arcs and pages by their parents
                 const arcsByParent = partitionOn('parentId')(arcs);
@@ -66,8 +66,12 @@ export default {
 
                 //Calculate related arcs and pages for this page
                 const pageId = req.params.pageId;
-                const arcId = getPage(pageId).arcId;
                 const page = getPage(pageId);
+                if(!page) {
+                    reject([{code: 404, msg: "Not Found"}]);
+                    return;
+                }
+                const arcId = page.arcId;
                 const index = rootArc.allPages.indexOf(page);
                 const firstPageId = first(rootArc.allPages).id;
                 const firstArcPageId = getFirstArcPage(arcId);
@@ -75,8 +79,8 @@ export default {
                 const nextPageId = index < rootArc.allPages.length - 1 ? rootArc.allPages[index+1].id : null;
                 const lastArcPageId = getLastArcPage(arcId);
                 const lastPageId = last(rootArc.allPages).id;
-                const prevArcId = (last(rootArc.allPages.slice(0, index).filter(_(notEqual(arcId), prop('arcId')))) || {arcId: null}).arcId;
-                const nextArcId = (first(rootArc.allPages.slice(index+1).filter(_(notEqual(arcId), prop('arcId')))) || {arcId: null}).arcId;;
+                const prevArcId = (last(rootArc.allPages.slice(0, index).filter(_(notEquals(arcId), prop('arcId')))) || {arcId: null}).arcId;
+                const nextArcId = (first(rootArc.allPages.slice(index+1).filter(_(notEquals(arcId), prop('arcId')))) || {arcId: null}).arcId;;
                 const prevArcLastPageId = prevArcId ? getLastArcPage(prevArcId) : null;
                 const nextArcFirstPageId = nextArcId ? getFirstArcPage(nextArcId) : null;
 
@@ -101,13 +105,15 @@ export default {
                         comment.html = marked(comment.text || "");
                         comment.user = getUser(comment.userId);
                     });
-                    resolve(Object.assign(
+
+                    const details = Object.assign(
                         {}, thisPage,
                         {
                             arc: {url: getArc(arcId).url},
                             pageNumber: index+1,
                             image, commentary, firstPage, firstArcPage, prevPage, nextPage, lastArcPage, lastPage, prevArcLastPage, nextArcFirstPage}
-                    ));
+                    );
+                    resolve(details);
                 });
             });
         })
