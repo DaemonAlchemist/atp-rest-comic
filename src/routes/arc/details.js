@@ -19,13 +19,14 @@ const pagePermissions = createCrudPermissions('comic', 'page');
 export default {
     get: basicController.rest({
         getValidator: req => validator()
+            .loggedIn(req)
             .hasPermission(pagePermissions.view, req)
             .hasPermission(arcPermissions.view, req),
         loadResource: req => new Promise((resolve, reject) => {
             const arcId = req.params.arcId;
             Promise.all([
                 new Arc().getById(arcId),
-                new Arc().where({parentId: arcId}).orderBy('sortOrder ASC').list(),
+                new Arc().where({parentId: arcId, enabled: true}).orderBy('sortOrder ASC').list(),
                 new Arc().select(['id', 'parentId']).list(),
                 new Page().where({arcId, enabled: true}).orderBy('sortOrder ASC').list(),
             ]).then(([arc, subArcs, arcHierarchy, pages]) => {

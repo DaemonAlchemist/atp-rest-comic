@@ -19,6 +19,7 @@ const pagePermissions = createCrudPermissions('comic', 'page');
 export default {
     get: basicController.rest({
         getValidator: req => validator()
+            .loggedIn(req)
             .hasPermission(pagePermissions.view, req)
             .hasPermission(arcPermissions.view, req),
         loadResource: req => new Promise((resolve, reject) => {
