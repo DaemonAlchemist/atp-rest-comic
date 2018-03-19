@@ -34,7 +34,7 @@ export default {
                 const getArc = createIndex(prop('id'))(arcHierarchy);
 
                 //Get the list of parent ids
-                let parentIds = [arcId];
+                let parentIds = [+arcId];
                 let parentId = arc.parentId;
                 while(parentId) {
                     parentIds.push(parentId);
@@ -52,22 +52,25 @@ export default {
                 Promise.all(
                     [
                         new File().where({id: mediaIds}).list(),
-                        new Arc().select(['name', 'url']).where({id: parentIds}).list(),
+                        new Arc().select(['id', 'name', 'url']).where({id: parentIds}).list(),
                     ]
                 ).then(([files, parents]) => {
                     const getFile = createIndex(prop('id'))(files);
 
                     arc.banner = arc.bannerFileId ? getFile(arc.bannerFileId) : null;
+
                     arc.summaryHtml = marked(arc.summary || "");
+
                     subArcs.forEach(subArc => {
                         subArc.thumbnail = subArc.thumbnailFileId ? getFile(subArc.thumbnailFileId) : null;
                         subArc.summaryHtml = marked(subArc.summary || "");
                     });
+
                     pages.forEach(page => {
                         page.image = page.imageId ? getFile(page.imageId) : null;
                     })
 
-                    arc.parents = parents;
+                    arc.parents = parents.sort((a, b) => parentIds.indexOf(a.id) - parentIds.indexOf(b.id));
                     arc.subArcs = subArcs;
                     arc.pages = pages;
 
