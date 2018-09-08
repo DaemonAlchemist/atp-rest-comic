@@ -4,10 +4,10 @@ import {File} from "atp-rest-media";
 import {merge} from 'atp-pointfree';
 
 const feed = {
-    title: "Darkwynd Chronicles",
-    url: "http://api.darkwyndchronicles.com/feed",
-    ttl: "1800",
-    pageUrl: url => `http://www.darkwyndchronicles.com/comic/page/${url}`
+    title: process.env.COMIC_RSS_TITLE,
+    url: process.env.COMIC_RSS_RUL_,
+    ttl: process.env.COMIC_RSS_TTL,
+    pageUrl: url => `${process.env.COMIC_PAGE_URL}/${url}`
 };
 
 export default {
@@ -37,7 +37,7 @@ export default {
                         ${results.map(item => `
                             <item>
                                 <title>${feed.title}: ${item.name}</title>
-                                <description>&lt;img src="https://media.darkwyndchronicles.com/${item.image.s3Prefix ? `${item.image.s3Prefix} - ` : ''}${item.image.fileName} - 512x512.${item.image.fileExtension}" /&gt;</description>
+                                <description>&lt;img src="https://${process.env.MEDIA_AWS_STATIC_HOST}/${item.image.s3Prefix ? `${item.image.s3Prefix} - ` : ''}${item.image.fileName} - 512x512.${item.image.fileExtension}" /&gt;</description>
                                 <link>${feed.pageUrl(item.url)}</link>
                                 <pubDate>${item.postDate}</pubDate>
                             </item>
